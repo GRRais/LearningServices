@@ -13,5 +13,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(b.root)
+        b.simpleService.setOnClickListener {
+            startService(MyService.newIntent(this))
+        }
     }
 }
