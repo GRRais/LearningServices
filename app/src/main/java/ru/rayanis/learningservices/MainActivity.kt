@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import ru.rayanis.learningservices.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -18,9 +17,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(b.root)
         b.simpleService.setOnClickListener {
+            stopService(MyForegroundService.newIntent(this))
             startService(MyService.newIntent(this , 25))
         }
-        b.foregroundService.setOnClickListener {startForegroundService(MyForegroundService.newIntent(this))
+        b.foregroundService.setOnClickListener {
+            startForegroundService(MyForegroundService.newIntent(this))
+        }
+        b.intentService.setOnClickListener {
+            startForegroundService(MyIntentService.newIntent(this))
         }
     }
 }

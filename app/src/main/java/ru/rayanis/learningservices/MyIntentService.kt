@@ -1,5 +1,6 @@
 package ru.rayanis.learningservices
 
+import android.app.IntentService
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -13,42 +14,32 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 
-class MyForegroundService : Service() {
-
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+class MyIntentService : IntentService(NAME) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
         log("onCreate")
+        setIntentRedelivery()
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, createNotification())
     }
 
-    override fun onStartCommand(intent: Intent? , flags: Int , startId: Int): Int {
-        log("onStartCommand")
-        coroutineScope.launch {
-            for (i in 0 until 100) {
-                delay(1000)
-                log("Timer $i")
-            }
-            stopSelf()
-        }
-        return START_STICKY
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        coroutineScope.cancel()
         log("onDestroy")
     }
 
-    override fun onBind(p0: Intent?): IBinder? {
-        TODO("Not yet implemented")
+    override fun onHandleIntent(intent: Intent?) {
+        log("onHandleIntent")
+        for (i in 0 until 5) {
+            Thread.sleep(1000)
+            log("Timer $i")
+        }
     }
 
     private fun log(message: String) {
-        Log.d("SERVICE_TAG" , "MyForegroundService: $message")
+        Log.d("SERVICE_TAG", "IntentService: $message")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -56,27 +47,28 @@ class MyForegroundService : Service() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         val notificationChannel = NotificationChannel(
-            CHANNEL_ID ,
-            CHANNEL_NAME ,
+            CHANNEL_ID,
+            CHANNEL_NAME,
             NotificationManager.IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(notificationChannel)
     }
 
     private fun createNotification() = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Title")
-            .setContentText("Text")
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .build()
+        .setContentTitle("Title")
+        .setContentText("Text")
+        .setSmallIcon(R.drawable.ic_launcher_background)
+        .build()
 
     companion object {
 
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_NAME = "channel_name"
         private const val NOTIFICATION_ID = 1
+        private const val NAME = "MyIntentService"
 
         fun newIntent(context: Context): Intent {
-            return Intent(context, MyForegroundService::class.java)
+            return Intent(context, MyIntentService::class.java)
         }
     }
 }
