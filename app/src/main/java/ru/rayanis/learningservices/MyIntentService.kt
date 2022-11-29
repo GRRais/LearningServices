@@ -20,7 +20,7 @@ class MyIntentService : IntentService(NAME) {
     override fun onCreate() {
         super.onCreate()
         log("onCreate")
-        setIntentRedelivery()
+        setIntentRedelivery(true)
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, createNotification())
     }
