@@ -1,10 +1,7 @@
 package ru.rayanis.learningservices
 
-import android.app.Service
 import android.app.job.JobParameters
 import android.app.job.JobService
-import android.content.Intent
-import android.os.IBinder
 import android.util.Log
 import kotlinx.coroutines.*
 
@@ -15,12 +12,6 @@ class MyJobService : JobService() {
     override fun onCreate() {
         super.onCreate()
         log("onCreate")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        coroutineScope.cancel()
-        log("onDestroy")
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
@@ -40,8 +31,14 @@ class MyJobService : JobService() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope.cancel()
+        log("onDestroy")
+    }
+
     private fun log(message: String) {
-        Log.d("SERVICE_TAG" , "MyJobService: $message")
+        Log.d("SERVICE_TAG", "MyJobService: $message")
     }
 
     companion object {

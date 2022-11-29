@@ -3,6 +3,7 @@ package ru.rayanis.learningservices
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -35,9 +36,10 @@ class MainActivity : AppCompatActivity() {
             val jobInfo = JobInfo.Builder(MyJobService.JOB_ID, componentName)
                 .setRequiresCharging(true)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setPersisted(true)
                 .build()
 
-            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+            val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.schedule(jobInfo)
         }
     }
